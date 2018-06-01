@@ -2,6 +2,8 @@ import csv
 
 truePath ="/Users/junzhezhang/Downloads/text-info-processing/"
 
+smallest_block = 1<<20
+
 ### info for AlexNet
 fileName1 =truePath+"vec_run_alex.text" 
 fileName2 = truePath+"vec_run_alex.csv"
@@ -31,7 +33,7 @@ maxIdx = 247
 
 blocks = set([]) 
 
-def text_2_csv(fileName1, fileName2):
+def text_2_csv(fileName1, fileName2,smallest_block):
   ### convert from vec_run.text (one iteration) into vec_run.csv
   # it deletes the existing contents if any.
   rows_list = []
@@ -51,13 +53,14 @@ def text_2_csv(fileName1, fileName2):
   for row in rows:
     if i>0:
       values = row.split(',')
-      split_rows.append(values[0:-1]) # exclude last item, t
+      if int(values[3]) >= smallest_block:
+        split_rows.append(values[0:-1]) # exclude last item, t
     i = i+1
   print "================================="
   return split_rows
-split_rows = text_2_csv(fileName1,fileName2)
+split_rows = text_2_csv(fileName1,fileName2,smallest_block)
 
-split_rows_2 = text_2_csv(fileName3,fileName4)
+split_rows_2 = text_2_csv(fileName3,fileName4,smallest_block)
 
 split_rows.sort(key = lambda x: x[2]) # sort in place.
 
@@ -256,3 +259,23 @@ print "after A and B maxLoad: "+str(max(load)/1024/1024)
 
 # # for block in cat_B:
 #   print '==================='
+
+# for block in cat_A1:
+#   print "---------------"
+#   last_row = block[0]
+#   for row in block:
+#     if (row != last_row) and int(last_row[0]) < maxIdx and int(row[0]) > maxIdx:
+#       print last_row
+#       print row
+#       last_row = row
+
+# for block in cat_A2:
+#   print "---------------"
+#   last_row = block[0]
+#   for row in block:
+#     if (row != last_row) and int(last_row[0]) < maxIdx and int(row[0]) > maxIdx:
+#       print last_row
+#       print row
+#       last_row = row
+
+
